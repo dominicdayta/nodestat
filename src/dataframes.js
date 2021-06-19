@@ -5,11 +5,27 @@ class Dataframe {
         this.data = data;
     }
 
-    //-> internal property: checks if a column is in the data
+    //-> internal method: checks if a column is in the data
     _hasColumn = (colName) => {
         let firstRow = this.data[0];
         if(Object.keys(firstRow).includes(colName)) return true;
         return false;
+    }
+
+    //-> internal method: create a key from a given set of columns
+    _createKey = (cols = []) => {
+        let keyCol = [];
+        for(let i = 0; i < this.nrow(); i++){
+            let thisDataRow = this.data[i];
+            let thisRowKey = "";
+            for(let j = 0; j < cols.length - 1; j++){
+                thisRowKey += String(thisDataRow[cols[j]]) + "-";
+            }
+
+            thisRowKey += String(thisDataRow[cols[cols.length - 1]]);
+            keyCol.push({_key: thisRowKey});
+        }
+        return(new Dataframe(keyCol));
     }
 
     //-> returns the data as a JSON string
@@ -100,6 +116,20 @@ class Dataframe {
         }
 
         return(thisRow);
+    }
+
+    //-> return unique values of a column
+    unique = (col) => {
+        if(! this._hasColumn(col)) throw("Specified column not in dataframe");
+        let uniqueVals = [];
+        let thisColumn = this.colToArray(col);
+
+        for(let i = 0; i < this.nrow(); i++){
+            let thisValue = thisColumn[i];
+            if(! uniqueVals.includes(thisValue)) uniqueVals.push(thisValue);
+        }
+        
+        return(uniqueVals);
     }
 
     //-> gives a specific subset of the dataframe based on the named columns
@@ -220,9 +250,37 @@ class Dataframe {
         return(new Dataframe(applyData));
     }
 
-    //-> TODO: apply a function along a specific column
+    //-> apply a function along a specific column
+    colApply = (FUN, col, name = "x") => {
+        if(this.nrow() == 0) return(new Dataframe([]));
+        if(! this._hasColumn(col)) throw("Specified column name not in dataframe");
 
-    //-> TODO: aggregates the columns by one or more columns, and a function
+        let thisColumn = this.colToArray(col);
+        let applyData = [];
+        for(let i = 0; i < this.nrow(); i++){
+            let applyDataRow = {};
+
+            applyDataRow[name] = FUN(thisColumn[i]);
+            applyData.push(applyDataRow);
+        }
+
+        return(new Dataframe(applyData));
+    }
+
+    //-> subset a data based on a true/false function
+    subset = (col, FUN) => {
+        if(this.nrow() == 0) return(new Dataframe([]));
+        if(! this._hasColumn(col)) throw("Specified column name not in dataframe");
+        let subsetData = [];
+        let currentCol = this.colToArray(col);
+        for(let i = 0; i < this.nrow(); i++){
+            if(FUN(currentCol[i])) subsetData.push(this.data[i]);
+        }
+
+        return(new Dataframe(subsetData));
+    }
+
+    //-> aggregates the columns by one or more columns, and a function
     aggregate = (by = [], FUN) => {
         if(this.nrow() == 0) return(new Dataframe([]));
         if(by.length == 0) throw("Need to identify one or more columns in BY");
@@ -231,9 +289,29 @@ class Dataframe {
             if(! this._hasColumn(by[j])) throw("One or more columns in BY not found in data");
         }
 
+        let dataWithKey = this.cbind(this._createKey(by));
+        let keys = dataWithKey.unique("_key");
         let aggregatedData = [];
+
+        for(let k = 0; k < keys.length; k++){
+            let dataForCurrentKey = dataWithKey.subset("_key",(x)=>{return(x == keys[k])});
+            let resultObject = dataForCurrentKey.drop(["_key"].concat(by)).apply(FUN, 1).data[0];
+
+            let resultAxis = {};
+            for(let j = 0; j < by.length; j++){
+                resultAxis[by[j]] = dataForCurrentKey.data[0][by[j]];
+            }
+
+            let mergedResult = {...resultAxis, ...resultObject}
+            aggregatedData.push(mergedResult);
+        }
         
         return(new Dataframe(aggregatedData));
+    }
+
+    //-> TODO: sort a dataframe by column
+    sort = (by = [], order = []) =>{
+        return(Infinity);
     }
 
 }

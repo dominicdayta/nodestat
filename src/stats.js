@@ -76,8 +76,13 @@ class Stats {
                 let thisRoundedRow = {};
                 let thisDataRow = x.data[i];
                 for(let j = 0; j < x.ncol(); j++){
-                    let currentNum = Number(thisDataRow[x.columns()[j]]);
-                    thisRoundedRow[x.columns()[j]] = Number(currentNum.toFixed(fig));
+                    thisRoundedRow[x.columns()[j]] = thisDataRow[x.columns()[j]];
+                    if(thisDataRow[x.columns()[j]].constructor === Number){
+                        let currentNum = Number(thisDataRow[x.columns()[j]]);
+                        thisRoundedRow[x.columns()[j]] = Number(currentNum.toFixed(fig));
+
+                    }
+
                 }
 
                 roundedData.push(thisRoundedRow);
