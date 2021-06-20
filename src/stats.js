@@ -11,7 +11,7 @@ class Stats {
         if(name == "Titanic") return(new Dataframe(Titanic));
         if(name == "sleep") return(new Dataframe(sleep));
         if(name == "anscombe") return(new Dataframe(anscombe));
-        if(name == "AirPassengers") return(new Dataframe.fromArrayList(AirPassengers));
+        if(name == "AirPassengers") return(Dataframe.fromArrayList(AirPassengers));
         if(name == "women") return( new Dataframe(women));
         throw("Unknown dataset '" + name + "'");
     }
