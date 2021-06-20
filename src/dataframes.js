@@ -2,7 +2,48 @@ class Dataframe {
 
     //-> creates a new Dataframe from a javascript object
     constructor(data = []){
-        this.data = data;
+        let newData = [];
+        let classes = [];
+        let firstRow = null;
+        let names = null;
+
+        if(data.length == 0){
+            this.data = newData;
+            this.classes = classes;
+            return true;
+        }
+
+        firstRow = data[0];
+        names = Object.keys(firstRow);
+        for(let j = 0; j < names.length; j ++){
+            let testClass = null;
+            let testVal = firstRow[names[j]];
+            if(testVal.constructor == Number) testClass = "numeric";
+            if(testVal.constructor == String) testClass = "character";
+            if(isNaN(Number(testVal))) testClass = "character";
+            if(testClass == null) throw("Unknown data type in dataframe");
+            
+            classes.push(testClass);
+        }
+
+        for(let i = 0; i < data.length; i++){
+            let thisDataRow = {};
+            let thisInputRow = data[i];
+
+            for(let j = 0; j < names.length; j++){
+                let thisVal = thisInputRow[names[j]];
+                let thisClass = classes[j];
+
+                thisDataRow[names[j]] = String(thisVal);
+                if(thisClass == "numeric") thisDataRow[names[j]] = Number(thisVal);
+            }
+
+            newData.push(thisDataRow);
+        }
+        
+        this.data = newData;
+        this.classes = classes;
+        return true;
     }
 
     //-> internal method: checks if a column is in the data
@@ -34,7 +75,7 @@ class Dataframe {
     }
 
     //-> create a new dataframe from an object of arrays
-    fromArrayList = (arrayList) => {
+    static fromArrayList = (arrayList) => {
         let arrayNames = Object.keys(arrayList);
         let lengthOfFirstArray = arrayList[arrayNames[0]].length;
         let jsonFormat = [];
@@ -55,7 +96,61 @@ class Dataframe {
         return(new Dataframe(jsonFormat));
     }
 
-    //-> TODO create a new dataframe from an html table
+    //-> create a new dataframe from an html table
+    static fromHTMLTable = (id = null, parentID = null, index = 0) => {
+        let tableElement = null;
+        let tableHeader = null;
+        let tableRows = null;
+        let tableHeaderContents = null;
+
+        let jsonFormat = [];
+        let columns = [];
+
+        if(id != null)  tableElement = document.getElementById(id);
+        if(parentID != null){
+            let parentElement = document.getElementById(id);
+            let tables = parentElement.getElementsByTagName("table");
+            if(tables.length == 0) throw("No table found in specified container");
+            if(tables.length > 0){
+                if(index == 0) console.warn("More than one table element found in container. Use index to specify which element should be used");
+                if(index > tables.length) throw("Subscript out of bounds");
+            }
+            
+            tableElement = tables[index];
+        }
+
+        if(tableElement == null) throw("Unable to find specified element");
+
+        // get header
+        tableHeader = tableElement.getElementsByTagName("thead");
+        tableRows = tableElement.getElementsByTagName("tr");
+
+        if(tableHeader == null){
+            tableHeader = tableRows[0];
+            console.warn("No <thead> found in table. The first row will be used as a header instead");
+        }
+
+        tableHeader = tableHeader[0].getElementsByTagName("tr")[0];
+        tableHeaderContents = tableHeader.getElementsByTagName("*");
+        for(let j = 0; j < tableHeaderContents.length; j++){
+            columns.push(String(tableHeaderContents[j].innerHTML));
+        }
+
+        for(let i = 1; i < tableRows.length; i++){
+            let thisDataRow = {};
+            let thisTableRow = tableRows[i].getElementsByTagName("*");
+            for(let j = 0; j < columns.length; j++){
+                let thisVal = thisTableRow[j].innerHTML;
+                
+                thisDataRow[columns[j]] = Number(thisVal);
+                if(isNaN(Number(thisVal))) thisDataRow[columns[j]] = String(thisVal);
+            }
+
+            jsonFormat.push(thisDataRow);
+        }
+
+        return(new Dataframe(jsonFormat));
+    }
 
     //-> show data
     print = () => {
@@ -267,6 +362,24 @@ class Dataframe {
         return(new Dataframe(applyData));
     }
 
+    //-> apply a function along a specific column. Similar to colApply, but replaces the column
+    colTransform = (FUN, col) => {
+        if(this.nrow() == 0) return(new Dataframe([]));
+        if(! this._hasColumn(col)) throw("Specified column name not in dataframe");
+
+        let thisColumn = this.colToArray(col);
+        let applyData = [];
+        for(let i = 0; i < this.nrow(); i++){
+            let applyDataRow = {};
+            let originalDataRow = JSON.parse(JSON.stringify(this.data))[i];
+
+            applyDataRow[col] = FUN(thisColumn[i]);
+            applyData.push({...originalDataRow,...applyDataRow});
+        };
+
+        return(new Dataframe(applyData));
+    }
+
     //-> subset a data based on a true/false function
     subset = (col, FUN) => {
         if(this.nrow() == 0) return(new Dataframe([]));
@@ -309,8 +422,10 @@ class Dataframe {
         return(new Dataframe(aggregatedData));
     }
 
-    //-> TODO: sort a dataframe by column
-    sort = (by = [], order = []) =>{
+    //-> TODO: sort a dataframe by one or more columns
+    // if DESC is not given, assume false for all
+    // if DESC is given, must be of same length as BY
+    sort = (by = [], desc = []) =>{
         return(Infinity);
     }
 
