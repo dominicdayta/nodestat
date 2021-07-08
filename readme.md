@@ -20,21 +20,28 @@ The package currently contains two primary modules:
 `df`: Contains useful functions for creating and managing dataframes.
 
 ```
-const nstat = require('../index.js');
+const nstat = require('@dominicdayta/nodestat');
 
-let df = new nstat.df([{x:1,y:2,z:1},{x:2,y:3,z:4},{x:3, y:4, z:9}]);
+let stats = nstat.stat; // for shorthand
 
-console.log("Number of columns: ");
-console.log(df.ncol());
-\\-> 3
+// initiate the titanic dataset
+let titanic = stats.dataset("Titanic");
 
-console.log("Number of rows: ");
-console.log(df.nrow());
-\\->3
+// get the subset containing only survivors
+let titanicSurvivors = titanic.subset(col = "Survived", function(x){return(x == "Yes")});
+console.log(titanicSurvivors.data);
 
-console.log("Name of columns: ");
-console.log(df.columns());
-\\->['x','y','z']
+// aggregate the total number of survivors by sex and class
+let freqSurvivedBySexClass = titanic.select(["Class","Sex","Freq"]).aggregate(by = ["Class","Sex"], stats.sum);
+console.log(freqSurvivedBySexClass.data);
+
+// aggregate the total number of non-survivors by sex and age
+let freqDiedSexAge = titanic
+    .subset(col = "Survived", function(x){return(x == "No")})
+    .select(["Sex","Age","Freq"])
+    .aggregate(by = ["Sex","Age"], stats.sum)
+    .data;
+console.log(freqDiedSexAge);
 ```
 
 You can look into some sample use cases in the `./demo` directory. Our full documentation is still in progress.
