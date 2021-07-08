@@ -7,7 +7,10 @@
 Written For NodeJS By Dominic Dayta (@dominicdayta)
 
 ### Install
-```
+
+Install using NPM as
+
+```properties
 $ npm install @dominicdayta/nodestat
 ```
 
@@ -19,7 +22,7 @@ The package currently contains two primary modules:
 
 `df`: Contains useful functions for creating and managing dataframes.
 
-```
+```javascript
 const nstat = require('@dominicdayta/nodestat');
 
 let stats = nstat.stat; // for shorthand
@@ -28,11 +31,17 @@ let stats = nstat.stat; // for shorthand
 let titanic = stats.dataset("Titanic");
 
 // get the subset containing only survivors
-let titanicSurvivors = titanic.subset(col = "Survived", function(x){return(x == "Yes")});
+let titanicSurvivors = titanic.subset(col = "Survived", 
+    function(x){
+        return(x == "Yes")
+    }
+);
 console.log(titanicSurvivors.data);
 
 // aggregate the total number of survivors by sex and class
-let freqSurvivedBySexClass = titanic.select(["Class","Sex","Freq"]).aggregate(by = ["Class","Sex"], stats.sum);
+let freqSurvivedBySexClass = titanic
+    .select(["Class","Sex","Freq"])
+    .aggregate(by = ["Class","Sex"], stats.sum);
 console.log(freqSurvivedBySexClass.data);
 
 // aggregate the total number of non-survivors by sex and age
