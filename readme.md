@@ -23,10 +23,15 @@ let df = new nstat.df([{x:1,y:2,z:1},{x:2,y:3,z:4},{x:3, y:4, z:9}]);
 
 console.log("Number of columns: ");
 console.log(df.ncol());
+\\ -> 3
+
 console.log("Number of rows: ");
 console.log(df.nrow());
+\\->3
+
 console.log("Name of columns: ");
 console.log(df.columns());
+\\->['x','y','z']
 ```
 
 You can look into some sample use cases in the `./demo` directory. Our full documentation is still in progress.
