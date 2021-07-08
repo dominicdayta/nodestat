@@ -1,0 +1,13 @@
+{
+    "name": "@dominicdayta/nodestat",
+    "version": "0.0.1",
+    "description": "A lightweight library for data wrangling and analysis",
+    "license": "MIT",
+    "main": "index.js",
+    "keywords": [
+        "stat",
+        "nodestat",
+        "dataframes",
+        "data"
+    ]
+}

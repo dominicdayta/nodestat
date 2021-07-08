@@ -1,4 +1,4 @@
-class Dataframe {
+module.exports.df = class Dataframe {
 
     //-> creates a new Dataframe from a javascript object
     constructor(data = []){
@@ -67,6 +67,28 @@ class Dataframe {
             keyCol.push({_key: thisRowKey});
         }
         return(new Dataframe(keyCol));
+    }
+
+    //->repeat an element n times
+    _repeat(str,times){
+        let repeated = [];
+        for(let i = 0; i < times; i++){
+            repeated.push(str);
+        }
+
+        return(repeated);
+    }
+
+    //-> internal method: sorts a dataframe
+    _stableSort = (arr, compare) => arr
+        .map((item, index) => ({item, index}))
+        .sort((a, b) => compare(a.item, b.item) || a.index - b.index)
+        .map(({item}) => item)
+        
+    _sortObject = (sortedData,sortCol,sortDesc) => {
+        let sorted = this._stableSort(sortedData, (a, b) => a[sortCol] - b[sortCol]);
+        if(sortDesc == true) sorted = this._stableSort(sortedData, (a, b) => b[sortCol] - a[sortCol]);
+        return(sorted);
     }
 
     //-> returns the data as a JSON string
@@ -362,7 +384,7 @@ class Dataframe {
         return(new Dataframe(applyData));
     }
 
-    //-> apply a function along a specific column. Similar to colApply, but replaces the column
+    //-> apply a function along a specific column. Similar to colApply, but returns the data with the column replaced
     colTransform = (FUN, col) => {
         if(this.nrow() == 0) return(new Dataframe([]));
         if(! this._hasColumn(col)) throw("Specified column name not in dataframe");
@@ -425,8 +447,20 @@ class Dataframe {
     //-> TODO: sort a dataframe by one or more columns
     // if DESC is not given, assume false for all
     // if DESC is given, must be of same length as BY
-    sort = (by = [], desc = []) =>{
-        return(Infinity);
+    order = (by = [], desc = []) => {
+        let sortedData = JSON.parse(JSON.stringify(this.data));
+        if(desc.length == 0) desc = this._repeat(false, by.length);
+        if(desc.length != by.length) throw("Argument for BY not matching with DESC");
+        console.log(desc);
+
+        for(let j = 0; j < by.length; j++){
+            let sortCol = by[j];
+            let sortDesc = desc[j];
+
+            sortedData = this._sortObject(sortedData,sortCol,sortDesc);
+        }
+
+        return(new Dataframe(sortedData));
     }
 
 }
