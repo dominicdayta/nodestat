@@ -1,4 +1,4 @@
-const Dataframes = require('./dataframes.js');
+const Dataframes = require('../dataframe/dataframe.js');
 
 module.exports.stat = class Stats {
 

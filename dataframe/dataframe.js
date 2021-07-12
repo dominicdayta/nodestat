@@ -1,48 +1,14 @@
+const dfConstruct = require('./constructor.js');
+
 module.exports.df = class Dataframe {
 
     //-> creates a new Dataframe from a javascript object
     constructor(data = []){
-        let newData = [];
-        let classes = [];
-        let firstRow = null;
-        let names = null;
+        let inputData = dfConstruct(data);
 
-        if(data.length == 0){
-            this.data = newData;
-            this.classes = classes;
-            return true;
-        }
-
-        firstRow = data[0];
-        names = Object.keys(firstRow);
-        for(let j = 0; j < names.length; j ++){
-            let testClass = null;
-            let testVal = firstRow[names[j]];
-            if(testVal.constructor == Number) testClass = "numeric";
-            if(testVal.constructor == String) testClass = "character";
-            if(isNaN(Number(testVal))) testClass = "character";
-            if(testClass == null) throw("Unknown data type in dataframe");
-            
-            classes.push(testClass);
-        }
-
-        for(let i = 0; i < data.length; i++){
-            let thisDataRow = {};
-            let thisInputRow = data[i];
-
-            for(let j = 0; j < names.length; j++){
-                let thisVal = thisInputRow[names[j]];
-                let thisClass = classes[j];
-
-                thisDataRow[names[j]] = String(thisVal);
-                if(thisClass == "numeric") thisDataRow[names[j]] = Number(thisVal);
-            }
-
-            newData.push(thisDataRow);
-        }
-        
-        this.data = newData;
-        this.classes = classes;
+        this.data = inputData.data;
+        this.classes = inputData.classes;
+        this.names = inputData.names;
         return true;
     }
 
