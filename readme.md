@@ -7,7 +7,7 @@ A Node JS package for data wrangling and analysis
 
 ## Project Goals
 
-Both Javascript and Node already have a variety of packages that deal with dataframes and statistical computation. The goal with Nodestat is to create a unified grammar of data analysis that can transform Javascript into a fully capable language for data analysis. Specific design goals are as follows:
+Both Javascript and Node already have a variety of packages that deal with dataframes and statistical computation. The goal with Nodestat is to demonstrate a unified grammar of data analysis that can transform Javascript into a fully capable language for data analysis. Specific design goals are as follows:
 
 - An Intuitive Grammar. Even without a third party package, Javascript already contains some functionality for handling data using Javascript Objects and JSON. In fact, many of the base functions that Nodestat implements through its `Dataframe` module are hardly novel and can be written by any experienced Javascript developer. With Nodestat, however, the aim is to create a grammar for data analysis that is intuitive and efficient, allowing the same split-apply-combine strategy for data wrangling that the `plyr`/`dplyr` package provides for the R language, and that `pandas` provides for the Python language.
 
@@ -25,11 +25,13 @@ $ npm install @dominicdayta/nodestat
 
 ### API Documentation
 
-The package currently contains two primary modules:
+The package currently contains three primary modules:
 
-`stat`: Contains basic statistical formulas and tests.
+`stat`: Contains basic statistical formulas, tests, and datasets (`stat.tests` for hypothesis testing).
 
 `df`: Contains useful functions for creating and managing dataframes.
+
+`random`: Seedable random number generation and object-oriented probability distributions.
 
 ```javascript
 const nstat = require('@dominicdayta/nodestat');
@@ -60,10 +62,57 @@ let freqDiedSexAge = titanic
     .aggregate(by = ["Sex","Age"], stats.sum)
     .data;
 console.log(freqDiedSexAge);
+
+// sort using helper syntax (similar to dplyr::arrange)
+let sorted = titanic.order(["Class", nstat.desc("Freq")]);
+console.log(sorted.head(5).data);
 ```
 
-You can look into some sample use cases in the `./demo` directory. For full documentation on how to use the API, please look into the `./docs` directory.
+### Random module
+
+Nodestat provides a seedable random API with distribution objects similar to NumPy and PyTorch. Create a distribution, then call `pdf`, `cdf`, and `sample`:
+
+```javascript
+const nstat = require('@dominicdayta/nodestat');
+
+// reproducible sampling
+nstat.random.set_global_seed(2026);
+
+const normal = nstat.random.normal(0, 1);
+console.log(normal.pdf(0));
+console.log(normal.cdf(1.96));
+console.log(normal.sample(5));
+
+const pois = nstat.random.poisson(3);
+console.log(pois.pmf(2));
+console.log(pois.sample());
+```
+
+Supported distributions include normal, exponential, gamma, geometric, uniform, poisson, binomial, chi-square, Student's t, and hypergeometric. See [random module docs](docs/random/introduction.md) for the full reference.
+
+### Statistical tests
+
+Nodestat includes R-style hypothesis testing under `stat.tests`:
+
+```javascript
+const nstat = require('@dominicdayta/nodestat');
+const sleep = nstat.stat.dataset('sleep');
+
+// one-way ANOVA
+const model = nstat.stat.tests.aov('extra ~ group', sleep);
+console.log(model.statistic, model.p_value);
+
+// Tukey HSD pairwise comparisons
+console.log(nstat.stat.tests.tukeyHSD(model).comparisons);
+
+// multiple-comparison p-value adjustment
+console.log(nstat.stat.tests.p_adjust([0.01, 0.04, 0.03], 'holm'));
+```
+
+Supported procedures include one- and two-sample t-tests, Wilcoxon tests, ANOVA with Tukey HSD, and Bonferroni/Holm/Hochberg/BY p-value adjustment. See [statistical tests docs](docs/stats/tests.md).
+
+You can look into sample runnable use cases in the `./examples` directory (legacy examples are in `./demo`). For full documentation on how to use the API, please look into the `./docs` directory.
 
 # License
 
-This package is licensed under the MIT License. Copyright &copy; 2021, Dominic Dayta.
+This package is licensed under the MIT License.

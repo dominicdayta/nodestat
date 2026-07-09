@@ -10,6 +10,7 @@ The following methods allow you to split, slice, and subset your dataframes.
 - [`drop`](#drop)
 - [`head`](#head)
 - [`tail`](#tail)
+- [`order`](#order)
 
 ## colToArray
 [Back to top](#slicing-and-subsetting-datasets).
@@ -205,4 +206,35 @@ Example:
 
 ```javascript
 titanic.tail(5);
+```
+
+## order
+[Back to top](#slicing-and-subsetting-datasets).
+
+Sorts a dataframe by one or more columns in ascending or descending order. Sorting is stable, so ties preserve original row order.
+
+Usage:
+
+```javascript
+df.order(by, desc);
+df.order([col1, nstat.desc(col2)]);
+```
+
+Arguments:
+- `by`: An array describing sort keys. Each entry can be:
+  - a column name string (ascending), or
+  - a helper spec such as `nstat.desc("score")` / `nstat.asc("score")`.
+- `desc`: Optional boolean array (legacy style). `true` means descending for the corresponding `by` column. If omitted, all columns sort ascending.
+
+Returns:
+- A Dataframe object, sorted by the given keys.
+
+Examples:
+
+```javascript
+// legacy style
+let sortedA = titanic.order(["Class", "Freq"], [false, true]);
+
+// dplyr-like helper style
+let sortedB = titanic.order(["Class", nstat.desc("Freq")]);
 ```

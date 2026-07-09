@@ -4,6 +4,9 @@
     "description": "A lightweight library for data wrangling and analysis",
     "license": "MIT",
     "main": "index.js",
+    "scripts": {
+        "test": "node --test"
+    },
     "keywords": [
         "stat",
         "nodestat",
