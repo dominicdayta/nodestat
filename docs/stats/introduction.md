@@ -4,8 +4,7 @@ The `Stats` module extends the capability of `Dataframes` by implementing method
 
 The rest of the documentation is split across the following topics:
 
-- Statistics
-- Summarizing Data
-- Statistical Tests
+- [Statistical Tests](tests.md)
+- [Tests Reference](tests-reference.md)
 
 Return to the Docs [Introduction](../introduction.md).

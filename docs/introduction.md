@@ -51,9 +51,8 @@ The rest of this documentation is split according to module. We also provide som
     - [The Apply Functions](dataframe/apply.md)
 - Stats
     - [Introduction](stats/introduction.md)
-    - Statistics
-    - Summarizing Data
-    - Statistical Tests
+    - [Statistical Tests](stats/tests.md)
+    - [Tests Reference](stats/tests-reference.md)
 - Random
     - [Introduction](random/introduction.md)
     - [Per Distribution Reference](random/distributions.md)

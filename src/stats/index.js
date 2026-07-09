@@ -1,5 +1,6 @@
 const Dataframe = require('../dataframe/index.js');
 const datasets = require('../datasets/index.js');
+const tests = require('./tests/index.js');
 
 module.exports.stat = class Stats {
     static dataset = (name) => {
@@ -110,3 +111,5 @@ module.exports.stat = class Stats {
         return(this.var(x) ** (0.5));
     }
 }
+
+module.exports.stat.tests = tests;

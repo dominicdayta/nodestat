@@ -10,6 +10,7 @@ From the repository root:
 node examples/sorting.js
 node examples/random-seeding.js
 node examples/random-distributions.js
+node examples/hypothesis-tests.js
 ```
 
 ## Available examples
@@ -19,3 +20,4 @@ node examples/random-distributions.js
   - helper signature: `order([..., nstat.desc("col"), nstat.asc("col")])`
 - `examples/random-seeding.js`: Demonstrates `nstat.random.set_global_seed(...)` reproducibility.
 - `examples/random-distributions.js`: Demonstrates construction and basic `pdf`/`cdf`/`pmf`/`sample` usage across the random distribution family.
+- `examples/hypothesis-tests.js`: Demonstrates `stat.tests` procedures (`t.test`, `wilcox.test`, `aov`, `tukeyHSD`, `p.adjust`).
