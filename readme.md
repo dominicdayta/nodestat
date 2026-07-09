@@ -25,11 +25,13 @@ $ npm install @dominicdayta/nodestat
 
 ### API Documentation
 
-The package currently contains two primary modules:
+The package currently contains three primary modules:
 
 `stat`: Contains basic statistical formulas and tests.
 
 `df`: Contains useful functions for creating and managing dataframes.
+
+`random`: Seedable random number generation and object-oriented probability distributions.
 
 ```javascript
 const nstat = require('@dominicdayta/nodestat');
@@ -65,6 +67,28 @@ console.log(freqDiedSexAge);
 let sorted = titanic.order(["Class", nstat.desc("Freq")]);
 console.log(sorted.head(5).data);
 ```
+
+### Random module
+
+Nodestat provides a seedable random API with distribution objects similar to NumPy and PyTorch. Create a distribution, then call `pdf`, `cdf`, and `sample`:
+
+```javascript
+const nstat = require('@dominicdayta/nodestat');
+
+// reproducible sampling
+nstat.random.set_global_seed(2026);
+
+const normal = nstat.random.normal(0, 1);
+console.log(normal.pdf(0));
+console.log(normal.cdf(1.96));
+console.log(normal.sample(5));
+
+const pois = nstat.random.poisson(3);
+console.log(pois.pmf(2));
+console.log(pois.sample());
+```
+
+Supported distributions include normal, exponential, gamma, geometric, uniform, poisson, binomial, chi-square, Student's t, and hypergeometric. See [random module docs](docs/random/introduction.md) for the full reference.
 
 You can look into sample runnable use cases in the `./examples` directory (legacy examples are in `./demo`). For full documentation on how to use the API, please look into the `./docs` directory.
 
