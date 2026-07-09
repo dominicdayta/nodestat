@@ -60,9 +60,13 @@ let freqDiedSexAge = titanic
     .aggregate(by = ["Sex","Age"], stats.sum)
     .data;
 console.log(freqDiedSexAge);
+
+// sort using helper syntax (similar to dplyr::arrange)
+let sorted = titanic.order(["Class", nstat.desc("Freq")]);
+console.log(sorted.head(5).data);
 ```
 
-You can look into some sample use cases in the `./demo` directory. For full documentation on how to use the API, please look into the `./docs` directory.
+You can look into sample runnable use cases in the `./examples` directory (legacy examples are in `./demo`). For full documentation on how to use the API, please look into the `./docs` directory.
 
 # License
 

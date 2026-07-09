@@ -17,8 +17,25 @@ After installing Nodestat through npm, simply call it using
 ```javascript
 const nstat = require('@dominicdayta/nodestat');
 //-> To call the Dataframe module, use nstat.df
-//-> To call the Stats module, use nstat.stats
+//-> To call the Stats module, use nstat.stat
 ```
+
+## Sorting Dataframes
+
+Nodestat supports stable multi-column dataframe sorting through `order()`, similar to `arrange()` in dplyr.
+
+```javascript
+const nstat = require('@dominicdayta/nodestat');
+let df = nstat.stat.dataset("Titanic");
+
+// Legacy style: explicit DESC flags
+let sortedLegacy = df.order(["Class", "Freq"], [false, true]);
+
+// Helper style: dplyr-like inline direction
+let sortedHelper = df.order(["Class", nstat.desc("Freq")]);
+```
+
+For complete details, including all slicing and sorting methods, see [Slicing and Subsetting](dataframe/slicing.md).
 
 ## Contents
 

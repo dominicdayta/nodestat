@@ -46,3 +46,42 @@ test('subset filters rows with predicate', () => {
     assert.equal(filtered.nrow(), 2);
     assert.deepEqual(filtered.colToArray('value'), [1, 2]);
 });
+
+test('order sorts by one numeric column ascending and descending', () => {
+    const df = new nodestat.df([
+        { value: 2 },
+        { value: 10 },
+        { value: 1 },
+    ]);
+
+    assert.deepEqual(df.order(['value']).colToArray('value'), [1, 2, 10]);
+    assert.deepEqual(df.order(['value'], [true]).colToArray('value'), [10, 2, 1]);
+});
+
+test('order sorts by multiple columns with mixed directions', () => {
+    const df = new nodestat.df([
+        { group: 'B', score: 2, id: 'b1' },
+        { group: 'A', score: 3, id: 'a1' },
+        { group: 'A', score: 1, id: 'a2' },
+        { group: 'B', score: 5, id: 'b2' },
+        { group: 'A', score: 3, id: 'a3' },
+    ]);
+
+    const sorted = df.order(['group', 'score', 'id'], [false, true, false]);
+    assert.deepEqual(sorted.colToArray('id'), ['a1', 'a3', 'a2', 'b2', 'b1']);
+});
+
+test('order supports inline desc helper and keeps old API', () => {
+    const df = new nodestat.df([
+        { group: 'A', score: 2, id: 'a1' },
+        { group: 'A', score: 5, id: 'a2' },
+        { group: 'B', score: 1, id: 'b1' },
+        { group: 'B', score: 3, id: 'b2' },
+    ]);
+
+    const helperSorted = df.order(['group', nodestat.desc('score')]);
+    const legacySorted = df.order(['group', 'score'], [false, true]);
+
+    assert.deepEqual(helperSorted.colToArray('id'), ['a2', 'a1', 'b2', 'b1']);
+    assert.deepEqual(legacySorted.colToArray('id'), ['a2', 'a1', 'b2', 'b1']);
+});

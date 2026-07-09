@@ -2,6 +2,7 @@ const dfConstruct = require('./constructor.js');
 const plyr = require('./ops/apply.js');
 const slicer = require('./ops/slicer.js');
 const binder = require('./ops/binder.js');
+const sorter = require('./ops/sort.js');
 
 const fromArrayList = require('./inputs/fromArrayList.js');
 
@@ -27,26 +28,6 @@ class DataFrame {
     _createKey = (cols = []) => {
         let keyCol = createKey(this.data, cols);
         return(new DataFrame(keyCol));
-    }
-
-    _repeat(str,times){
-        let repeated = [];
-        for(let i = 0; i < times; i++){
-            repeated.push(str);
-        }
-
-        return(repeated);
-    }
-
-    _stableSort = (arr, compare) => arr
-        .map((item, index) => ({item, index}))
-        .sort((a, b) => compare(a.item, b.item) || a.index - b.index)
-        .map(({item}) => item)
-
-    _sortObject = (sortedData,sortCol,sortDesc) => {
-        let sorted = this._stableSort(sortedData, (a, b) => a[sortCol] - b[sortCol]);
-        if(sortDesc == true) sorted = this._stableSort(sortedData, (a, b) => b[sortCol] - a[sortCol]);
-        return(sorted);
     }
 
     toString = () => {
@@ -178,18 +159,7 @@ class DataFrame {
     }
 
     order = (by = [], desc = []) => {
-        let sortedData = JSON.parse(JSON.stringify(this.data));
-        if(desc.length == 0) desc = this._repeat(false, by.length);
-        if(desc.length != by.length) throw("Argument for BY not matching with DESC");
-        console.log(desc);
-
-        for(let j = 0; j < by.length; j++){
-            let sortCol = by[j];
-            let sortDesc = desc[j];
-
-            sortedData = this._sortObject(sortedData,sortCol,sortDesc);
-        }
-
+        let sortedData = sorter.orderRows(this.data, by, desc);
         return(new DataFrame(sortedData));
     }
 }
