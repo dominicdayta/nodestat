@@ -1,7 +1,7 @@
 module.exports = {
-    anscombe: require('../../data/anscombe.js'),
-    sleep: require('../../data/sleep.js'),
-    titanic: require('../../data/titanic.js'),
-    airpassengers: require('../../data/airpassengers.js'),
-    women: require('../../data/women.js')
+    anscombe: require('./anscombe.js'),
+    sleep: require('./sleep.js'),
+    titanic: require('./titanic.js'),
+    airpassengers: require('./airpassengers.js'),
+    women: require('./women.js'),
 };
