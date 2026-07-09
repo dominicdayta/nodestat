@@ -18,6 +18,7 @@ After installing Nodestat through npm, simply call it using
 const nstat = require('@dominicdayta/nodestat');
 //-> To call the Dataframe module, use nstat.df
 //-> To call the Stats module, use nstat.stat
+//-> To call the Random module, use nstat.random
 ```
 
 ## Sorting Dataframes
@@ -53,6 +54,9 @@ The rest of this documentation is split according to module. We also provide som
     - Statistics
     - Summarizing Data
     - Statistical Tests
+- Random
+    - [Introduction](random/introduction.md)
+    - [Per Distribution Reference](random/distributions.md)
 - Extending to other packages
     - [Visualizing Dataframes with Plotly](extending/plotly.md)
 
