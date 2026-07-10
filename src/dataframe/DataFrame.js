@@ -100,13 +100,13 @@ class DataFrame {
 
     cbind = (df) => {
         if(df.constructor !== DataFrame) throw("Not a dataframe");
-        let bindedData = binder.cbind(this.data,df);
+        let bindedData = binder.cbind(this.data, df.data);
         return(new DataFrame(bindedData));
     }
 
     rbind = (df) => {
         if(df.constructor !== DataFrame) throw("Not a dataframe");
-        let bindedData = binder.rbind(this.data, df);
+        let bindedData = binder.rbind(this.data, df.data);
         return(new DataFrame(bindedData));
     }
 

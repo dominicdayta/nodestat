@@ -1,6 +1,7 @@
 const Dataframe = require('../dataframe/index.js');
 const datasets = require('../datasets/index.js');
 const tests = require('./tests/index.js');
+const { lm } = require('./lm/index.js');
 
 module.exports.stat = class Stats {
     static dataset = (name) => {
@@ -113,3 +114,5 @@ module.exports.stat = class Stats {
 }
 
 module.exports.stat.tests = tests;
+module.exports.stat.lm = lm;
+module.exports.lm = lm;

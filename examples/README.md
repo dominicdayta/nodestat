@@ -11,6 +11,7 @@ node examples/sorting.js
 node examples/random-seeding.js
 node examples/random-distributions.js
 node examples/hypothesis-tests.js
+node examples/linear-model.js
 ```
 
 ## Available examples
@@ -21,3 +22,4 @@ node examples/hypothesis-tests.js
 - `examples/random-seeding.js`: Demonstrates `nstat.random.set_global_seed(...)` reproducibility.
 - `examples/random-distributions.js`: Demonstrates construction and basic `pdf`/`cdf`/`pmf`/`sample` usage across the random distribution family.
 - `examples/hypothesis-tests.js`: Demonstrates `stat.tests` procedures (`t.test`, `wilcox.test`, `aov`, `tukeyHSD`, `p.adjust`).
+- `examples/linear-model.js`: Demonstrates `lm()` formula fitting, coefficients, and dataframe-compatible residuals/fitted values.

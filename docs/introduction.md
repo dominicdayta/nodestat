@@ -53,6 +53,8 @@ The rest of this documentation is split according to module. We also provide som
     - [Introduction](stats/introduction.md)
     - [Statistical Tests](stats/tests.md)
     - [Tests Reference](stats/tests-reference.md)
+    - [Linear Models](stats/lm.md)
+    - [Linear Models Reference](stats/lm-reference.md)
 - Random
     - [Introduction](random/introduction.md)
     - [Per Distribution Reference](random/distributions.md)

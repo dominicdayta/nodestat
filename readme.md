@@ -27,7 +27,7 @@ $ npm install @dominicdayta/nodestat
 
 The package currently contains three primary modules:
 
-`stat`: Contains basic statistical formulas, tests, and datasets (`stat.tests` for hypothesis testing).
+`stat`: Contains basic statistical formulas, tests, datasets, and linear models (`stat.lm` / `nstat.lm`).
 
 `df`: Contains useful functions for creating and managing dataframes.
 
@@ -110,6 +110,22 @@ console.log(nstat.stat.tests.p_adjust([0.01, 0.04, 0.03], 'holm'));
 ```
 
 Supported procedures include one- and two-sample t-tests, Wilcoxon tests, ANOVA with Tukey HSD, and Bonferroni/Holm/Hochberg/BY p-value adjustment. See [statistical tests docs](docs/stats/tests.md).
+
+### Linear models
+
+Fit object-oriented linear models with formula syntax similar to R's `lm()`:
+
+```javascript
+const nstat = require('@dominicdayta/nodestat');
+const women = nstat.stat.dataset('women');
+
+const model = nstat.lm('weight ~ height', women);
+console.log(model.coef());
+console.log(model.summary());
+console.log(model.coeftable().print());
+```
+
+Formulas support interactions (`x * group`), transforms (`log(y) ~ sqrt(x)`), and as-is terms (`I(x^2)`). Categorical predictors are automatically dummy-coded. See [linear models docs](docs/stats/lm.md).
 
 You can look into sample runnable use cases in the `./examples` directory (legacy examples are in `./demo`). For full documentation on how to use the API, please look into the `./docs` directory.
 

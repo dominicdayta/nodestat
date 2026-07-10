@@ -6,5 +6,7 @@ The rest of the documentation is split across the following topics:
 
 - [Statistical Tests](tests.md)
 - [Tests Reference](tests-reference.md)
+- [Linear Models](lm.md)
+- [Linear Models Reference](lm-reference.md)
 
 Return to the Docs [Introduction](../introduction.md).
